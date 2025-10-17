@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "esnext",           // Transpila para ES mais moderno como sera a conversão do JS
+    "module": "nodenext",         // Suporte a ESM/CommonJS no Node como sera o processo de importação e exportação
+    "rootDir": ".",           // Onde está o código fonte
+    "outDir": "./dist",           // Onde vai gerar os .js compilados
+
+    "strict": true,               // Tipagem rigorosa
+    "esModuleInterop": true,      // Compatibilidade com require/import faz lib antigas sem suporte ter suporte ao import
+    "skipLibCheck": true,         // Ignora checagem de libs externas npx tsc ignora ler arquivos de @types quando npx tsc é executado, não vai verificar os tipos de libs que baixamos
+    "forceConsistentCasingInFileNames": true // Ligado Evita problemas de maiúscula/minúscula import "./UserService" import "./userservice"
+  },
+  //copilador olha pra essas pasta
+  "include": ["src", "server.ts", "basic.ts"],  // Inclui apenas o código fonte
+  "exclude": ["node_modules", "dist"] // Ignora pastas desnecessárias
+}
