@@ -16,8 +16,9 @@ const User = connection.define<UserModelInterface>('user', {
         allowNull: false,
     },
     status: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: DataTypes.INTEGER(1),
+        allowNull: false,
+        defaultValue: 1
     },
 })
 
