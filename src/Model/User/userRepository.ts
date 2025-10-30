@@ -10,7 +10,6 @@ const create = async (user: Partial<UserModelInterface>): Promise<UserModelInter
     }
 }
 
-
 const findByEmail = async (email: string): Promise<UserModelInterface | null> => {
     try {
         const user = await User.findOne({
