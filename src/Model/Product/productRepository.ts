@@ -44,9 +44,9 @@ const destroy = async (id: number) => {
 
 }
 
-const update = async (user: Partial<ProductModelInterface>, id: number) => {
+const update = async (product: Partial<ProductModelInterface>, id: number) => {
     try {
-        const updateProduct = await Product.update(user, {
+        const updateProduct = await Product.update(product, {
             where: {
                 id
             }
@@ -62,9 +62,13 @@ const update = async (user: Partial<ProductModelInterface>, id: number) => {
     }
 }
 
-const findAll = async (): Promise<ProductModelInterface[]> => {
+const findAll = async (where: object = {}): Promise<ProductModelInterface[]> => {
     try {
-        const products = await Product.findAll();
+        const products = await Product.findAll({
+            where: {
+                ...where
+            }
+        });
         return products;
     } catch (error: any) {
         throw new Error(error);

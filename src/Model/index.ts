@@ -2,6 +2,7 @@ import 'dotenv/config'
 import connection from "../config/database";
 import User from "./User/User";
 import Product from './Product/Product';
+import Order from './Order/Order';
 
 User.hasMany(Product, {
     foreignKey: {
@@ -10,6 +11,8 @@ User.hasMany(Product, {
         onUpdate: "CASCADE"
     }
 })
+
+Product.hasOne(Order)
 
 connection.sync({
     force: false,
