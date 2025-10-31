@@ -12,7 +12,7 @@ User.hasMany(Product, {
     }
 })
 
-Product.hasOne(Order)
+Product.hasMany(Order)
 
 connection.sync({
     force: false,
