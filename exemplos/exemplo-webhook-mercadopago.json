@@ -5,7 +5,7 @@
   "data": {
     "external_reference": "ext_ref_1234",
     "id": "123456",
-    "status": "processed",
+    "status": "approved",
     "status_detail": "accredited",
     "total_paid_amount": 100000,
     "transactions": {
@@ -22,7 +22,7 @@
           "reference": {
             "id": 1234567891
           },
-          "status": "processed",
+          "status": "approved",
           "status_detail": "accredited"
         }
       ]
