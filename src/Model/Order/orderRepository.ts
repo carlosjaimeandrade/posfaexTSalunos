@@ -60,9 +60,24 @@ const findAll = async (where: object = {}): Promise<OrderModelInterface[]> => {
     }
 }
 
+const findByReference = async (reference: string): Promise<OrderModelInterface | null> => {
+    try {
+        const order = await Order.findOne({
+            where: {
+                reference
+            }
+        });
+        return order;
+    } catch (error: any) {
+        throw new Error(error);
+    }
+}
+
+
 export default {
     create,
     destroy,
     update,
-    findAll
+    findAll,
+    findByReference
 }

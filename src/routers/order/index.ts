@@ -5,4 +5,6 @@ const orderRouter: Router = express.Router()
 
 orderRouter.post("/order", orderController.create)
 
+orderRouter.post("/order/notify", orderController.notify)
+
 export default orderRouter

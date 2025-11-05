@@ -42,7 +42,7 @@ const createToken = (user: UserModelInterface): boolean | object => {
     const expiresIn = '1h'
 
     const token = jwt.sign(payload, JWT_SECRET, {expiresIn})
-
+    
     return {
         token,
         expiresIn
