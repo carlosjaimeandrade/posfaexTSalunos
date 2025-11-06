@@ -2,8 +2,11 @@ import { Request, Response } from 'express'
 import orderCreateService from '../../services/order/orderCreateService'
 import productRepository from '../../Model/Product/productRepository'
 import crypto from "crypto"
-import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { MercadoPagoConfig, Preference, Payment } from 'mercadopago';
+import mercadoPagoConfig from '../../config/mercadoPagoConfig';
 import orderRepository from '../../Model/Order/orderRepository';
+import getAllOrdersService from '../../services/order/getAllOrdersService';
+import updateOrderService from '../../services/order/updateOrderService';
 
 const create = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -47,17 +50,18 @@ const create = async (req: Request, res: Response): Promise<void> => {
             status: "pendente",
             address: req.body.address,
         }
-        const MERCADO_PAGO_TOKEN = process.env.MERCADO_PAGO_TOKEN
-        if (!MERCADO_PAGO_TOKEN) {
+
+        const client = mercadoPagoConfig()
+
+        if (!client) {
             res.status(500)
             res.json({
-                message: "ocorreu um erro interno"
+                message: "Ocorreu um erro interno"
             })
             return
         }
 
-        const client = new MercadoPagoConfig({ accessToken: MERCADO_PAGO_TOKEN });
-        const preference = new Preference(client);
+        const preference = new Preference(client as MercadoPagoConfig);
         const result = await preference.create({
             body: {
                 items: [
@@ -130,7 +134,95 @@ const notify = async (req: Request, res: Response): Promise<void> => {
     })
 }
 
+const getAllOrders = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const orders = await getAllOrdersService.getOrders()
+
+        res.json({
+            total: orders.length,
+            orders
+        })
+    } catch (error) {
+        res.status(500)
+        res.json({
+            message: "ocorreu um erro interno"
+        })
+    }
+}
+
+const getOrder = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const reference = req.params.reference
+
+        const client = mercadoPagoConfig()
+
+        if (!client) {
+            res.json({
+                message: "ocorreu um erro interno"
+            })
+            return
+        }
+
+        const payment = new Payment(client as MercadoPagoConfig)
+
+        const orderMercadoPago = await payment.search({
+            options: {
+                external_reference: reference
+            }
+        })
+
+        const order = await orderRepository.findByReference(reference)
+
+        res.json({
+            order,
+            orderMercadoPago
+        })
+    } catch (error) {
+        res.status(500)
+        res.json({
+            message: "ocorreu um erro interno"
+        })
+    }
+}
+
+const updateOrder = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = req.params.id
+        const status = req.body.status
+
+        if (!id || !status) {
+            res.status(400)
+            res.json({
+                message: "O parametro id e status obrigatorios"
+            })
+            return
+        }
+
+        const updateOrder = await updateOrderService.update(req.body, parseInt(id))
+
+        if (!updateOrder){
+            res.status(500)
+            res.json({
+                message: "não foi possivel atualizar"
+            })
+            return
+        }
+
+        res.json({
+            message: "atualizado com sucesso"
+        })
+    } catch (error) {
+        res.status(500)
+        res.json({
+            message: "ocorreu um erro interno"
+        })
+    }
+}
+
 export default {
     create,
-    notify
+    notify,
+    getAllOrders,
+    getOrder,
+    updateOrder
 }

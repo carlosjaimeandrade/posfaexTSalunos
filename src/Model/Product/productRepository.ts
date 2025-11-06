@@ -25,6 +25,18 @@ const findBySku = async (sku: string, where: object = {}): Promise<ProductModelI
     }
 }
 
+const findById = async (id: number): Promise<ProductModelInterface | null> => {
+    try {
+        const product = await Product.findOne({
+            where: { id }
+        })
+
+        return product
+    } catch (error: any) {
+        throw new Error(error);
+    }
+}
+
 const destroy = async (id: number) => {
     try {
         const product = await Product.destroy({
@@ -78,6 +90,7 @@ const findAll = async (where: object = {}): Promise<ProductModelInterface[]> => 
 export default {
     create,
     findBySku,
+    findById,
     destroy,
     update,
     findAll
