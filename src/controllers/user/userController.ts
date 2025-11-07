@@ -3,6 +3,9 @@ import createUserService from '../../services/user/createUserService'
 import authUserService from '../../services/user/authUserService'
 import destroyUserService from '../../services/user/destroyUserService'
 import updateUserService from '../../services/user/updateUserService'
+import ADMIN_EMAIL from '../../constants/admin'
+import getUsersService from '../../services/user/getUsersService'
+import userRepository from '../../Model/User/userRepository'
 
 const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -68,9 +71,9 @@ const authUser = async (req: Request, res: Response): Promise<void> => {
             return
         }
 
-        const token = authUserService.createToken(user)
+        const tokenPayload = authUserService.createToken(user)
 
-        if (!token) {
+        if (!tokenPayload || typeof tokenPayload === 'boolean') {
             res.status(500)
             res.json({
                 message: "Houve um erro ao gerar o token"
@@ -78,7 +81,17 @@ const authUser = async (req: Request, res: Response): Promise<void> => {
             return
         }
 
-        res.json(token)
+        const isAdmin = user.email === ADMIN_EMAIL
+
+        res.json({
+            ...tokenPayload,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email
+            },
+            isAdmin
+        })
     } catch (error) {
         res.status(500)
         res.json({
@@ -145,10 +158,45 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
+const getUsers = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const users = await getUsersService.getUsers();
+
+        res.json({
+            total: users.length,
+            users
+        })
+    } catch (error) {
+        res.status(500)
+        res.json({
+            message: "houve um erro interno"
+        })
+    }
+}
+
+const getUserAdmin = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const email = req.params.email
+        const user = await userRepository.findByEmail(email)
+
+        res.json({
+            user
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500)
+        res.json({
+            message: "houve um erro interno"
+        })
+    }
+}
+
 export default {
     createUser,
     authUser,
     getUser,
     destroyUser,
-    updateUser
+    updateUser,
+    getUsers,
+    getUserAdmin
 }

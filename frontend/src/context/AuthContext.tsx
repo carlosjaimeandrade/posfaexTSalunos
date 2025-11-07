@@ -2,13 +2,16 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 import { api } from '../lib/api'
 import { getToken as getStoredToken, setToken as setStoredToken, logout as clearStoredToken } from '../lib/auth'
 
+const ADMIN_EMAIL = 'jaime_andrek@hotmail.com'
+
 type User = { id: number; name: string; email: string }
 
 type AuthContextType = {
   token: string | null
   user: User | null
   isAuthenticated: boolean
-  login: (token: string) => void
+  isAdmin: boolean
+  login: (token: string, userPayload?: User | null) => void
   logout: () => void
 }
 
@@ -39,9 +42,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     token,
     user,
     isAuthenticated: !!token,
-    login: (tk: string) => {
+    isAdmin: user?.email === ADMIN_EMAIL,
+    login: (tk: string, userPayload?: User | null) => {
       setStoredToken(tk)
       setToken(tk)
+      if (userPayload) {
+        setUser(userPayload)
+      }
     },
     logout: () => {
       clearStoredToken()

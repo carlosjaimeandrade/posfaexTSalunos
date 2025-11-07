@@ -15,13 +15,17 @@ export default function Login() {
     e.preventDefault()
     setMsg('')
     try {
-      const res = await api<{ token: string; expiresIn: string }>('/auth', {
+      const res = await api<{ token: string; expiresIn: string; user?: { id: number; name: string; email: string }; isAdmin?: boolean }>('/auth', {
         method: 'POST',
         body: JSON.stringify({ email, password })
       })
       if (res?.token) {
-        login(res.token)
+        login(res.token, res.user)
         setMsg('Login efetuado!')
+        if (res.isAdmin) {
+          navigate('/admin/orders', { replace: true })
+          return
+        }
         const from = location.state?.from?.pathname || '/me'
         navigate(from, { replace: true })
       } else {
@@ -33,9 +37,9 @@ export default function Login() {
   }
 
   return (
-    <div>
-      <h2>Login (/auth)</h2>
-      <form onSubmit={onSubmit} style={{ display: 'grid', gap: 8, maxWidth: 360 }}>
+    <div className="card">
+      <h2 style={{ marginTop: 0 }}>Login (/auth)</h2>
+      <form onSubmit={onSubmit} className="grid" style={{ maxWidth: 360 }}>
         <input placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
         <input placeholder="senha" type="password" value={password} onChange={e => setPassword(e.target.value)} />
         <button type="submit">Entrar</button>

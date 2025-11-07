@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, user, logout } = useAuth()
+  const { isAuthenticated, user, logout, isAdmin } = useAuth()
   const location = useLocation()
   const hideAside = location.pathname.startsWith('/marketplac/')
 
@@ -58,6 +58,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
             <h4>Marketplace</h4>
             <Link to="/marketplac/1">Abrir vendedor #1</Link>
+
+            {isAdmin && (
+              <>
+                <h4>Admin</h4>
+                <Link to="/admin/orders">Pedidos</Link>
+                <Link to="/admin/users">Usuários</Link>
+              </>
+            )}
           </nav>
         </aside>
         )}

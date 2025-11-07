@@ -2,6 +2,7 @@ import express, {Request, Response, NextFunction} from 'express'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import userRepository from '../Model/User/userRepository'
 import UserModelInterface from '../Model/User/Interface/UserModelInterface'
+import ADMIN_EMAIL from '../constants/admin'
 
 declare global {
     namespace Express {
@@ -66,7 +67,7 @@ const authAdmin = async (req: any, res:Response , next:NextFunction) => {
         }
 
         //poderia consultar a tabela de administradores
-        if (user.email != "jaime_andrek@hotmail.com") {
+        if (user.email != ADMIN_EMAIL) {
             res.status(401)
             res.json({
                 message: "Não autorizado"

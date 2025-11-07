@@ -16,6 +16,9 @@ import ProductEdit from './pages/ProductEdit'
 import Marketplace from './pages/Marketplace'
 import Layout from './components/Layout'
 import Protected from './components/Protected'
+import AdminRoute from './components/AdminRoute'
+import AdminOrders from './pages/AdminOrders'
+import AdminUsers from './pages/AdminUsers'
 
 export default function App() {
   return (
@@ -31,6 +34,8 @@ export default function App() {
         <Route path="/success" element={<Success />} />
         <Route path="/failure" element={<Failure />} />
         <Route path="/pending" element={<Pending />} />
+        <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
+        <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
 
         <Route path="/me" element={<Protected><Profile /></Protected>} />
         <Route path="/user/update" element={<Protected><UpdateUser /></Protected>} />
